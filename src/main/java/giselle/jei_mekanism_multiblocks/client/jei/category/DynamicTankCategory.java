@@ -1,0 +1,184 @@
+package giselle.jei_mekanism_multiblocks.client.jei.category;
+
+import java.util.function.Consumer;
+
+import giselle.jei_mekanism_multiblocks.client.gui.CheckBoxWidget;
+import giselle.jei_mekanism_multiblocks.client.gui.IntSliderWidget;
+import giselle.jei_mekanism_multiblocks.client.gui.IntSliderWithButtons;
+import giselle.jei_mekanism_multiblocks.client.jei.MultiblockCategory;
+import giselle.jei_mekanism_multiblocks.client.jei.MultiblockWidget;
+import giselle.jei_mekanism_multiblocks.client.jei.ResultWidget;
+import giselle.jei_mekanism_multiblocks.common.util.VolumeTextHelper;
+import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
+import mekanism.common.config.MekanismConfig;
+import mekanism.common.registries.MekanismBlocks;
+import mezz.jei.api.helpers.IGuiHelper;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+
+public class DynamicTankCategory extends MultiblockCategory<DynamicTankCategory.DynamicTankWidget>
+{
+	public DynamicTankCategory(IGuiHelper helper)
+	{
+		super(helper, Mekanism.rl("dynamic_tank"), DynamicTankWidget.class, MekanismLang.DYNAMIC_TANK.translate(), new ItemStack(MekanismBlocks.DYNAMIC_VALVE));
+	}
+
+	@Override
+	protected void getRecipeCatalystItemStacks(Consumer<ItemStack> consumer)
+	{
+		super.getRecipeCatalystItemStacks(consumer);
+		consumer.accept(new ItemStack(MekanismBlocks.DYNAMIC_TANK));
+		consumer.accept(new ItemStack(MekanismBlocks.DYNAMIC_VALVE));
+		consumer.accept(new ItemStack(MekanismBlocks.STRUCTURAL_GLASS));
+	}
+
+	public static class DynamicTankWidget extends MultiblockWidget
+	{
+		protected CheckBoxWidget useStructuralGlassCheckBox;
+		protected IntSliderWithButtons valvesWidget;
+
+		public DynamicTankWidget()
+		{
+
+		}
+
+		@Override
+		protected void collectOtherConfigs(Consumer<AbstractWidget> consumer)
+		{
+			super.collectOtherConfigs(consumer);
+
+			consumer.accept(this.useStructuralGlassCheckBox = new CheckBoxWidget(0, 0, 0, 0, Component.translatable("text.jei_mekanism_multiblocks.specs.use_things", new ItemStack(MekanismBlocks.STRUCTURAL_GLASS).getHoverName()), true));
+			this.useStructuralGlassCheckBox.addSelectedChangedHandler(this::onUseStructuralGlassChanged);
+			consumer.accept(this.valvesWidget = new IntSliderWithButtons(0, 0, 0, 0, "text.jei_mekanism_multiblocks.specs.valves", 0, 2, 0));
+			this.valvesWidget.getSlider().addValueChangeHanlder(this::onValvesChanged);
+
+			this.updateValvesSliderLimit();
+		}
+
+		@Override
+		protected void onDimensionChanged()
+		{
+			super.onDimensionChanged();
+
+			this.updateValvesSliderLimit();
+		}
+
+		public void updateValvesSliderLimit()
+		{
+			IntSliderWidget valvesSlider = this.valvesWidget.getSlider();
+			int valves = valvesSlider.getValue();
+			valvesSlider.setMaxValue(this.getSideBlocks());
+			valvesSlider.setValue(valves);
+		}
+
+		protected void onValvesChanged(int valves)
+		{
+			this.markNeedUpdate();
+		}
+
+		protected void onUseStructuralGlassChanged(boolean useStructuralGlass)
+		{
+			this.markNeedUpdate();
+		}
+
+		@Override
+		protected void collectCost(ICostConsumer consumer)
+		{
+			super.collectCost(consumer);
+
+			int corners = this.getCornerBlocks();
+			int sides = this.getSideBlocks();
+			int valves = this.getValveCount();
+			sides -= valves;
+
+			int tanks = 0;
+			int structuralGlasses = 0;
+
+			if (this.isUseStruturalGlass())
+			{
+				tanks = corners;
+				structuralGlasses = sides;
+			}
+			else
+			{
+				tanks = corners + sides;
+			}
+
+			consumer.accept(new ItemStack(MekanismBlocks.DYNAMIC_TANK, tanks));
+			consumer.accept(new ItemStack(MekanismBlocks.DYNAMIC_VALVE, valves));
+			consumer.accept(new ItemStack(MekanismBlocks.STRUCTURAL_GLASS, structuralGlasses));
+		}
+
+		@Override
+		protected void collectResult(Consumer<AbstractWidget> consumer)
+		{
+			super.collectResult(consumer);
+
+			int volume = this.getDimensionVolume();
+			long fluidCapacity = volume * MekanismConfig.general.dynamicTankFluidPerTank.get();
+			long chemicalCapacity = volume * MekanismConfig.general.dynamicTankFluidPerTank.get();
+			consumer.accept(new ResultWidget(Component.translatable("text.jei_mekanism_multiblocks.result.fluid_tank"), VolumeTextHelper.formatMB(fluidCapacity)));
+			consumer.accept(new ResultWidget(Component.translatable("text.jei_mekanism_multiblocks.result.chemical_tank"), VolumeTextHelper.formatMB(chemicalCapacity)));
+		}
+
+		public int getValveCount()
+		{
+			return this.valvesWidget.getSlider().getValue();
+		}
+
+		public void setValveCount(int valveCount)
+		{
+			this.valvesWidget.getSlider().setValue(valveCount);
+		}
+
+		public boolean isUseStruturalGlass()
+		{
+			return this.useStructuralGlassCheckBox.isSelected();
+		}
+
+		public void setUseStructuralGlass(boolean useStructuralGlass)
+		{
+			this.useStructuralGlassCheckBox.setSelected(useStructuralGlass);
+		}
+
+		@Override
+		public int getDimensionWidthMin()
+		{
+			return 3;
+		}
+
+		@Override
+		public int getDimensionWidthMax()
+		{
+			return 18;
+		}
+
+		@Override
+		public int getDimensionLengthMin()
+		{
+			return 3;
+		}
+
+		@Override
+		public int getDimensionLengthMax()
+		{
+			return 18;
+		}
+
+		@Override
+		public int getDimensionHeightMin()
+		{
+			return 3;
+		}
+
+		@Override
+		public int getDimensionHeightMax()
+		{
+			return 18;
+		}
+
+	}
+
+}

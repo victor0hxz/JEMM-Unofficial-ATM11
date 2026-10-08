@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "giselle.jei_mekanism_multiblocks.common.mixin",
+	"minVersion": "0.0.0",
+	"compatibilityLevel": "JAVA_21",
+	"client": [],
+	"mixins": [],
+	"injectors": {
+		"defaultRequire": 0
+	}
+}

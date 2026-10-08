@@ -1,0 +1,8 @@
+{
+  "text.jei_mekanism_multiblocks.specs.cell_tier": "Célula: %s",
+  "text.jei_mekanism_multiblocks.specs.provider_tier": "Provedor: %s",
+  "text.jei_mekanism_multiblocks.specs.cells": "Células: %s",
+  "text.jei_mekanism_multiblocks.specs.providers": "Provedores: %s",
+  "text.jei_mekanism_multiblocks.result.matrix_capacity": "Capacidade de energia",
+  "text.jei_mekanism_multiblocks.result.matrix_output": "Capacidade de transferência"
+}

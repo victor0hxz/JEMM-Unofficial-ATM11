@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "giselle.jei_mekanism_multiblocks.client.mixin",
+	"minVersion": "0.0.0",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"minecraft.TooltipMixin",
+		"jei.RecipeGuiLogicAccessor",
+		"jei.RecipesGuiMixin"
+	],
+	"mixins": [],
+	"injectors": {
+		"defaultRequire": 0
+	}
+}

@@ -1,0 +1,374 @@
+package giselle.jei_mekanism_multiblocks.client.gui;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.network.chat.Component;
+
+public class ListWidget extends ContainerWidget
+{
+	private int itemsLeft;
+	private int itemsTop;
+	private int itemsRight;
+	private int itemsBottom;
+	private int itemHeight;
+	private int itemOffset;
+	private boolean itemsHorizontalChanged;
+	private boolean itemsVerticalChanged;
+	private boolean itemsChanged;
+
+	private int scrollBarWidth;
+	private boolean scrollBarHorizontalChanged;
+	private boolean scrollBarVerticalChanged;
+
+	private ButtonWidget upButton;
+	private ButtonWidget downButton;
+	private IntSliderWidget scrollBar;
+
+	public ListWidget(int pX, int pY, int pWidth, int pHeight, int itemHeight)
+	{
+		super(pX, pY, pWidth, pHeight);
+
+		this.itemsLeft = 0;
+		this.itemsTop = 0;
+		this.itemsRight = 0;
+		this.itemsBottom = 0;
+		this.itemHeight = itemHeight;
+		this.itemOffset = 0;
+		this.scrollBarWidth = 12;
+
+		this.addFunctionWidget(this.upButton = new ButtonWidget(0, 0, 0, 0, Component.literal("▲")));
+		this.upButton.addPressHandler(this::onScrollButtonClick);
+
+		this.addFunctionWidget(this.downButton = new ButtonWidget(0, 0, 0, 0, Component.literal("▼")));
+		this.downButton.addPressHandler(this::onScrollButtonClick);
+
+		this.addFunctionWidget(this.scrollBar = new IntSliderWidget(0, 0, 0, 0, Component.empty(), 0, 0, 0));
+		this.scrollBar.addValueChangeHanlder(this::onScrollChanged);
+
+		this.scrollBar.setVertical();
+		this.itemsChanged = true;
+		this.updateScrollWidgetsHorizontal();
+		this.updateScrollWidgetsVertical();
+	}
+
+	protected void onScrollChanged(int scroll)
+	{
+		this.itemsVerticalChanged = true;
+	}
+
+	protected void onScrollButtonClick(AbstractWidget button)
+	{
+		if (button == this.upButton)
+		{
+			this.setScrollAmount(this.getScrollAmount() - 1);
+		}
+		else if (button == this.downButton)
+		{
+			this.setScrollAmount(this.getScrollAmount() + 1);
+		}
+
+	}
+
+	public int getItemCountInHeight()
+	{
+		int height = this.getHeight();
+		int itemHeight = this.getItemHeight();
+		int itemOffset = this.getItemOffset();
+		return (height + itemOffset) / (itemHeight + itemOffset);
+	}
+
+	@Override
+	public boolean mouseScrolled(double pMouseX, double pMouseY, double pScrollX, double pScrollY)
+	{
+		if (this.active && this.visible)
+		{
+			if (this.isMouseOver(pMouseX, pMouseY))
+			{
+				long scrollDelta = Math.round(pScrollY / Math.abs(pScrollY));
+				this.setScrollAmount(this.getScrollAmount() - (int) scrollDelta);
+			}
+
+		}
+
+		return super.mouseScrolled(pMouseX, pMouseY, pScrollX, pScrollY);
+	}
+
+	@Override
+	public void extractWidgetRenderState(GuiGraphicsExtractor pGuiGraphicsExtractor, int pMouseX, int pMouseY, float pPartialTicks)
+	{
+		if (this.scrollBarHorizontalChanged)
+		{
+			this.scrollBarHorizontalChanged = false;
+			this.updateScrollWidgetsHorizontal();
+		}
+
+		if (this.scrollBarVerticalChanged)
+		{
+			this.scrollBarVerticalChanged = false;
+			this.updateScrollWidgetsVertical();
+		}
+
+		if (this.itemsChanged)
+		{
+			this.itemsChanged = false;
+
+			int scroll = this.scrollBar.getValue();
+			int childCount = this.getChildren().size();
+			this.scrollBar.setMaxValue(Math.max(childCount - this.getItemCountInHeight(), 0));
+			this.scrollBar.setValue(scroll);
+			this.scrollBar.active = this.scrollBar.getMaxValue() > 0;
+			this.upButton.active = this.scrollBar.active;
+			this.downButton.active = this.scrollBar.active;
+		}
+
+		if (this.itemsHorizontalChanged)
+		{
+			this.itemsHorizontalChanged = false;
+			this.updateItemsHorizontal();
+		}
+
+		if (this.itemsVerticalChanged)
+		{
+			this.itemsVerticalChanged = false;
+			this.updateItemsVertical();
+		}
+
+		super.extractWidgetRenderState(pGuiGraphicsExtractor, pMouseX, pMouseY, pPartialTicks);
+	}
+
+	protected void updateItemsVertical()
+	{
+		int itemHeight = this.getItemHeight();
+		int itemOffset = this.getItemOffset();
+		int itemY = this.getItemsTop() + -this.getScrollAmount() * (itemHeight + itemOffset);
+		int top = 0;
+		int bottom = this.getHeight() - this.getItemsBottom() - itemHeight;
+
+		for (AbstractWidget widget : this.getChildren())
+		{
+			widget.setY(itemY);
+			widget.setHeight(itemHeight);
+			widget.visible = top <= itemY && itemY <= bottom;
+
+			itemY += itemHeight + itemOffset;
+		}
+
+	}
+
+	protected void updateItemsHorizontal()
+	{
+		for (AbstractWidget widget : this.getChildren())
+		{
+			this.updateItemHorizontal(widget);
+		}
+
+	}
+
+	protected void updateItemHorizontal(AbstractWidget widget)
+	{
+		widget.setX(this.getItemsLeft());
+		widget.setWidth(this.scrollBar.getX() - this.getItemsRight() - widget.getX());
+	}
+
+	@Override
+	protected void onChildAdded(AbstractWidget widget)
+	{
+		super.onChildAdded(widget);
+
+		this.updateItemHorizontal(widget);
+		this.itemsChanged = true;
+		this.itemsVerticalChanged = true;
+	}
+
+	@Override
+	protected void onChildRemoved(AbstractWidget widget)
+	{
+		super.onChildRemoved(widget);
+
+		this.itemsChanged = true;
+		this.itemsVerticalChanged = true;
+	}
+
+	private void updateScrollWidgetsHorizontal()
+	{
+		int scrollBarWidth = this.getScrollBarWidth();
+		int x = this.getWidth() - scrollBarWidth;
+
+		this.upButton.setWidth(scrollBarWidth);
+		this.upButton.setX(x);
+
+		this.downButton.setWidth(scrollBarWidth);
+		this.downButton.setX(this.upButton.getX());
+
+		this.scrollBar.setWidth(scrollBarWidth);
+		this.scrollBar.setX(this.downButton.getX());
+
+		this.itemsHorizontalChanged = true;
+	}
+
+	private void updateScrollWidgetsVertical()
+	{
+		int scrollBarWidth = this.getScrollBarWidth();
+		this.upButton.setHeight(scrollBarWidth);
+		this.upButton.setY(0);
+
+		this.downButton.setHeight(scrollBarWidth);
+		this.downButton.setY(this.getHeight() - this.downButton.getHeight());
+
+		this.scrollBar.setY(this.upButton.getY() + this.upButton.getHeight());
+		this.scrollBar.setHeight(this.downButton.getY() - this.scrollBar.getY());
+
+		this.itemsVerticalChanged = true;
+	}
+
+	@Override
+	protected void onWidthChanged()
+	{
+		super.onWidthChanged();
+		this.scrollBarHorizontalChanged = true;
+	}
+
+	@Override
+	protected void onHeightChanged()
+	{
+		super.onHeightChanged();
+		this.scrollBarVerticalChanged = true;
+	}
+
+	public int getItemsLeft()
+	{
+		return this.itemsLeft;
+	}
+
+	public void setItemsLeft(int itemsLeft)
+	{
+		itemsLeft = Math.max(itemsLeft, 0);
+
+		if (this.getItemsLeft() != itemsLeft)
+		{
+			this.itemsLeft = itemsLeft;
+			this.itemsHorizontalChanged = true;
+		}
+
+	}
+
+	public int getItemsRight()
+	{
+		return this.itemsRight;
+	}
+
+	public void setItemsRight(int itemsRight)
+	{
+		itemsRight = Math.max(itemsRight, 0);
+
+		if (this.getItemsRight() != itemsRight)
+		{
+			this.itemsRight = itemsRight;
+			this.itemsHorizontalChanged = true;
+		}
+
+	}
+
+	public int getItemsTop()
+	{
+		return this.itemsTop;
+	}
+
+	public void setItemsTop(int itemsTop)
+	{
+		itemsTop = Math.max(itemsTop, 0);
+
+		if (this.getItemsTop() != itemsTop)
+		{
+			this.itemsTop = itemsTop;
+			this.itemsVerticalChanged = true;
+		}
+
+	}
+
+	public int getItemsBottom()
+	{
+		return this.itemsBottom;
+	}
+
+	public void setItemsBottom(int itemsBottom)
+	{
+		itemsBottom = Math.max(itemsBottom, 0);
+
+		if (this.getItemsBottom() != itemsBottom)
+		{
+			this.itemsBottom = itemsBottom;
+			this.itemsVerticalChanged = true;
+		}
+
+	}
+
+	public void setItemsPadding(int padding)
+	{
+		this.setItemsLeft(padding);
+		this.setItemsTop(padding);
+		this.setItemsRight(padding);
+		this.setItemsBottom(padding);
+	}
+
+	public int getItemHeight()
+	{
+		return this.itemHeight;
+	}
+
+	public void setItemHeight(int itemHeight)
+	{
+		itemHeight = Math.max(itemHeight, 0);
+	}
+
+	public int getItemOffset()
+	{
+		return this.itemOffset;
+	}
+
+	public void setItemOffset(int itemOffset)
+	{
+		itemOffset = Math.max(itemOffset, 0);
+
+		if (this.getItemOffset() != itemOffset)
+		{
+			this.itemOffset = Math.max(itemOffset, 0);
+			this.itemsVerticalChanged = true;
+		}
+
+	}
+
+	public int getScrollBarWidth()
+	{
+		return this.scrollBarWidth;
+	}
+
+	public void setScrollBarWidth(int scrollBarWidth)
+	{
+		scrollBarWidth = Math.max(scrollBarWidth, 0);
+
+		if (this.getScrollBarWidth() != scrollBarWidth)
+		{
+			this.scrollBarWidth = scrollBarWidth;
+			this.scrollBarHorizontalChanged = true;
+		}
+
+	}
+
+	public int getScrollMin()
+	{
+		return 0;
+	}
+
+	public int getScrollAmount()
+	{
+		return this.scrollBar.getValue();
+	}
+
+	public void setScrollAmount(int scrollAmount)
+	{
+		this.scrollBar.setValue(scrollAmount);
+	}
+
+}
