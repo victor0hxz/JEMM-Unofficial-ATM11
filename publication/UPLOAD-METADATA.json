@@ -1,0 +1,18 @@
+{
+  "displayName": "JustEnoughMekanismMultiblocks-26.1.2-6.5-port2-atm11-0.9.0.jar",
+  "changelog": "Initial unofficial fan compatibility build for ATM11 0.9.0 and Minecraft 26.1.2.\n\nAdds eight JEI multiblock calculators with adjustable dimensions, material costs and statistics. Induction matrices support the four Mekanism tiers and four optional Mekanism Extras tiers.\n\nValidated in isolated client/server worlds. Full-pack gameplay testing remains necessary.\n",
+  "changelogType": "markdown",
+  "releaseType": "beta",
+  "relations": {
+    "projects": [
+      {
+        "type": "requiredDependency",
+        "slug": "mekanism-version-locked"
+      },
+      {
+        "type": "requiredDependency",
+        "slug": "jei"
+      }
+    ]
+  }
+}
