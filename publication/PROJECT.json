@@ -21,11 +21,15 @@
   "originalAuthors": "Giselle",
   "jar": "JustEnoughMekanismMultiblocks-26.1.2-6.5-port2-atm11-0.9.0.jar",
   "sha256": "0414ea691c57c6935ae126f7e6a2401d984407ac0749361c1f23dddce4c4a602",
-  "status": "Created; portal status New; file uploads not yet verified",
+  "status": "JAR uploaded; moderation status not independently verified",
   "packagingNotes": "Original MIT license embedded in META-INF for standalone CurseForge distribution; production bytecode unchanged from tested GitHub build.",
   "projectId": 1734576,
   "slug": "just-enough-mekanism-multiblocks-unofficial-atm11",
   "curseforgeUrl": "https://www.curseforge.com/minecraft/mc-mods/just-enough-mekanism-multiblocks-unofficial-atm11",
   "publicationTitle": "Just Enough Mekanism Multiblocks: Version Locked",
-  "logoSubtitle": "VERSION LOCKED"
+  "logoSubtitle": "VERSION LOCKED",
+  "fileId": 9105087,
+  "fileUrl": "https://www.curseforge.com/minecraft/mc-mods/just-enough-mekanism-multiblocks-unofficial-atm11/files/9105087",
+  "pendingRelations": [],
+  "profileLogoStatus": "Version Locked PNG published on GitHub; native CurseForge logo replacement not confirmed"
 }
