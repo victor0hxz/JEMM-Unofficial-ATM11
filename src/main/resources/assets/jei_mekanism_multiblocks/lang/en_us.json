@@ -63,5 +63,17 @@
   "text.jei_mekanism_multiblocks.specs.cells": "Cells: %s",
   "text.jei_mekanism_multiblocks.specs.providers": "Providers: %s",
   "text.jei_mekanism_multiblocks.result.matrix_capacity": "Energy capacity",
-  "text.jei_mekanism_multiblocks.result.matrix_output": "Transfer capacity"
+  "text.jei_mekanism_multiblocks.result.matrix_output": "Transfer capacity",
+  "text.jei_mekanism_multiblocks.naquadah.top_center": "Top center",
+  "text.jei_mekanism_multiblocks.naquadah.layer": "Layer (bottom to top)",
+  "text.jei_mekanism_multiblocks.naquadah.octagonal": "Rounded faces",
+  "text.jei_mekanism_multiblocks.naquadah.title": "Naquadah Reactor",
+  "text.jei_mekanism_multiblocks.naquadah.controller": "Controller",
+  "text.jei_mekanism_multiblocks.naquadah.ports": "Ports",
+  "text.jei_mekanism_multiblocks.naquadah.shape": "Shape",
+  "text.jei_mekanism_multiblocks.naquadah.size": "Size",
+  "text.jei_mekanism_multiblocks.naquadah.interior": "Interior",
+  "text.jei_mekanism_multiblocks.naquadah.configure": "Set input/output",
+  "text.jei_mekanism_multiblocks.naquadah.empty": "Keep empty",
+  "text.jei_mekanism_multiblocks.naquadah.example": "Example: 2 ports"
 }

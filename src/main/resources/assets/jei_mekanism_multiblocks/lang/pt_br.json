@@ -4,5 +4,17 @@
   "text.jei_mekanism_multiblocks.specs.cells": "Células: %s",
   "text.jei_mekanism_multiblocks.specs.providers": "Provedores: %s",
   "text.jei_mekanism_multiblocks.result.matrix_capacity": "Capacidade de energia",
-  "text.jei_mekanism_multiblocks.result.matrix_output": "Capacidade de transferência"
+  "text.jei_mekanism_multiblocks.result.matrix_output": "Capacidade de transferência",
+  "text.jei_mekanism_multiblocks.naquadah.top_center": "Centro do topo",
+  "text.jei_mekanism_multiblocks.naquadah.layer": "Camada (base ao topo)",
+  "text.jei_mekanism_multiblocks.naquadah.octagonal": "Faces arredondadas",
+  "text.jei_mekanism_multiblocks.naquadah.title": "Reator de Naquadah",
+  "text.jei_mekanism_multiblocks.naquadah.controller": "Controlador",
+  "text.jei_mekanism_multiblocks.naquadah.ports": "Portas",
+  "text.jei_mekanism_multiblocks.naquadah.shape": "Formato",
+  "text.jei_mekanism_multiblocks.naquadah.size": "Tamanho",
+  "text.jei_mekanism_multiblocks.naquadah.interior": "Interior",
+  "text.jei_mekanism_multiblocks.naquadah.configure": "Ajustar entrada/saida",
+  "text.jei_mekanism_multiblocks.naquadah.empty": "Manter vazio",
+  "text.jei_mekanism_multiblocks.naquadah.example": "Modelo: 2 portas"
 }

@@ -69,6 +69,9 @@ public class JeiPlugin implements IModPlugin
 		this.addCategory(config.boilerVisible, () -> new BoilerCategory(guiHelper));
 		this.addCategory(config.spsVisible, () -> new SPSCategory(guiHelper));
 		this.addCategory(config.matrixVisible, () -> new MatrixCategory(guiHelper));
+        if (net.neoforged.fml.ModList.get().isLoaded("mekanism_extras")) {
+            this.categories.add(new giselle.jei_mekanism_multiblocks.client.jei.category.NaquadahReactorCategory(guiHelper));
+        }
 
 		if (JEI_MekanismMultiblocks.MekanismGeneratorsLoaded)
 		{
